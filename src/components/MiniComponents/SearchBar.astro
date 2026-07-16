@@ -1,0 +1,39 @@
+---
+import { Icon } from "astro-icon/components";
+
+---
+
+
+<form action="/games" method="GET" class="flex items-center relative gap-4 w-full h-full">
+    <button type="submit">
+        <Icon name="search" size="25"/>
+    </button>
+    <input
+        id="search"
+        name="q"
+        type="text"
+        placeholder="Search your games..."
+        class="bg-transparent w-full text-white placeholder:text-slate-400 focus:outline-none"
+    />
+        <span
+        id="search-error"
+        class="hidden text-red-400 text-xs absolute left-22 top-0.5 mt-1">
+        Enter at least 3 characters
+        </span>
+</form>
+
+<script>
+  const input = document.getElementById("search") as HTMLInputElement;
+  const error = document.getElementById("search-error") as HTMLSpanElement;
+
+  input.addEventListener("input", () => {
+    if (
+      input.value.length > 0 &&
+      input.value.length < 3
+    ) {
+      error.classList.remove("hidden");
+    } else {
+      error.classList.add("hidden");
+    }
+  });
+</script>

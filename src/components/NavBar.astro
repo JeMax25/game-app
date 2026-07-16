@@ -1,0 +1,35 @@
+---
+import { Icon } from "astro-icon/components";
+import SearchBar from "./MiniComponents/SearchBar.astro";
+
+
+---
+
+<nav class="nav-bar h-16 w-full py-2 border-b border-white/10 bg-neutral backdrop-blur px-4 md:px-6 flex items-center justify-between">
+    <div class="md:hidden" id="mobile-menu-toggle">
+        <Icon name="menu" size="35"/>
+    </div>
+
+    <div class="flex items-center justify-center gap-4 w-8/12 h-full bg-transparent md:bg-neutral-light rounded-full px-4 border border-transparent md:border-white/10">
+        <h2 class="logo-title font-bold text-2xl sm:text-3xl text-primary-light md:hidden block">Game Tracker</h2>
+        <div class="hidden md:flex items-center gap-2 w-full">
+            <SearchBar type="desktop"/>
+        </div>
+    </div>
+    <div>
+        <ul class="flex gap-3 items-center">
+            <li>
+                <a href=""><Icon name="notification" size="25"/></a>
+            </li>
+            <li class="hidden md:flex items-center gap-2">
+                <a href=""><Icon name="settings" size="25" /></a>
+            </li>
+            <li class="hidden md:flex">
+                <h1 class="text-white">User</h1>
+            </li>
+            <li>
+                <div class="border border-white w-8 h-8 rounded-full"></div>
+            </li>
+        </ul>
+    </div>
+</nav>

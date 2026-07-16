@@ -1,0 +1,191 @@
+---
+import { Icon } from "astro-icon/components";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { getGameBySlug, getScreenShots } from "../../lib/api/rawg";
+import { platformIcons } from "../../constants/plataformIcons";
+
+const { slug } = Astro.params;
+
+if (!slug){
+    return Astro.redirect('/');
+}
+
+const [gameData, screenshots] = await Promise.all([
+  getGameBySlug(slug),
+  getScreenShots(slug),
+]);
+
+const descriptionHtml = gameData.description
+  .replace(/\\n/g, "")
+  .replace(/<br\s*\/?>/gi, "<br><br>");
+
+---
+
+<MainLayout>
+    
+    <div class="relative w-full h-[65vh] md:h-[65vh] overflow-hidden" transition:name={gameData.id.toString()}>
+        <img
+            src={gameData.background_image}
+            alt={gameData.name}
+            class="w-full h-full object-cover object-top"
+            
+        />
+          <div class="absolute inset-0 bg-linear-to-r from-purple-950/90 via-purple-900/40 to-transparent"></div>
+          <div class="absolute inset-0 bg-black/30"></div>
+      <div class="absolute left-4 md:left-12 bottom-12 z-10 max-w-3xl">
+        <div class="flex flex-col gap-3">
+          <div class="flex gap-2 items-center">
+            <h3 class="text-primary border border-primary-light/50  bg-primary-light/10 font-jetbrains-mono py-1 px-3 text-xs rounded-full">NEW RELEASE</h3>
+            <div class="flex gap-1">
+              <Icon name="star-full"/>
+              <h3 class="text-xs font-jetbrains-mono text-secondary">{gameData.rating}/5</h3>
+            </div>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-inter font-extrabold max-w-120">{gameData.name}</h2>
+          <div class="flex gap-2.5">
+            <div class="flex items-center border border-white/20 bg-neutral-light/30 backdrop-blur-none px-2 py-1 md:py-2 md:px-5  rounded-xl gap-2">
+              <div class="">
+                <div class="border-none md:border text-primary bg-transparent md:border-green-500/90 md:text-green-400 md:bg-green-950 font-inter text-xl p-2 md:p-3 rounded-xl">{gameData.metacritic || `N/A`}</div>
+              </div>
+              <div>
+                <span class="font-jetbrains-mono text-xs text-primary-light">METACRITIC</span>
+                <h4 class="font-inter font-bold text-xl hidden">Universal Acclaim</h4>
+              </div>
+            </div>
+            <div class="flex items-end gap-2.5">
+              <div>
+                <span class="font-jetbrains-mono text-xs text-primary-light">RELEASE DATE</span>
+                <h3 class="font-inter font-bold text-xs md:text-xl">{gameData.released}</h3>
+              </div>
+              <div class="flex gap-1 pb-0 md:pb-1.5">
+                    {
+
+            gameData.parent_platforms && gameData.parent_platforms.length > 0 ? (
+              gameData.parent_platforms.map(({ platform }) => {
+                // 1. Buscamos si existe el icono en tu mapeo de constantes
+                const iconName = platformIcons[platform.slug];
+                // 2. Si no existe (es undefined o ""), retornamos null para que no dibuje nada
+                if (!iconName) return null;
+                // 3. Si existe, devolvemos el Icon de forma segura
+                return (
+                  <Icon
+                    name={iconName}
+                    size="20"
+                  />
+                );
+              })
+            ) : (
+              <p></p>
+            )
+        }
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="font-bold border border-primary-light bg-primary font-inter px-8 py-4 rounded-xl">
+            Add to Favorites
+          </button>
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="absolute right-4 top-12 xl:right-12 xl:top-1/2 -translate-y-1/2 z-10">
+        <div class=" w-16 h-12
+          xl:relative
+          xl:w-125
+          xl:h-70
+          bg-black/80
+          xl:backdrop-blur-md
+          rounded-2xl
+        ">
+        </div>
+      </div>
+    </div>
+    <section class="flex flex-col gap-8 md:gap-12 items-start lg:flex-row mt-12 mx-8 md:mx-12 lg:mx-16  ">
+      <div class="flex-2 gap-2 p-6 border min-w-0 border-white/20 bg-neutral-light rounded-2xl " >
+        <h2 class="font-inter font-extrabold text-2xl text-primary-light">Description</h2>
+        <br>
+        <div set:html={descriptionHtml} class="font-inter text-xs text-gray-400 prose prose-invert max-w-none"></div>
+      </div>
+      <div class="flex-1 flex flex-col gap-4 p-6 w-full md:min-w-0 justify-evenly border border-white/20 bg-neutral-light rounded-2xl">
+        <h2 class="font-jetbrains-mono text-primary-light text-sm font-bold">GAME DETAILS</h2>
+        <hr class="px-3 text-white/20">
+        <div class="flex flex-col gap-1">
+          <h3 class="font-jetbrains-mono text-primary-light/90 text-xs">DEVELOPER</h3>
+          <div class="font-inter text-sm font-bold text-gray-400 flex flex-col gap-1">{gameData.developers.map( d => (
+            <h3>{d.name}</h3>
+          ))}</div>
+        </div>
+         <div class="flex flex-col gap-1">
+          <h3 class="font-jetbrains-mono text-primary-light/90 text-xs">PUBLISHERS</h3>
+          <div class="font-inter text-sm font-bold text-gray-400">{gameData.publishers.map( d => (
+            <h3 class="">{d.name}</h3>
+          ))}</div>
+        </div>
+         <div class="flex flex-col gap-1">
+          <h3 class="font-jetbrains-mono text-primary-light/90 text-xs">PLAYTIME</h3>
+          <div class="font-inter text-sm font-bold flex items-center gap-0.5 text-gray-400">
+            <Icon name="clock" size="15"/>
+            {gameData.playtime}+ Hours
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <h3 class="font-jetbrains-mono text-primary-light/90 text-xs">WEBSITE</h3>
+          <a href={gameData.website} target="_blank" class="font-inter text-sm font-bold text-secondary/60 break-all">
+            {gameData.website}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="flex flex-col gap-8 md:gap-12 lg:flex-row lg:items-start mt-12 mx-8 md:mx-12 lg:mx-16 ">
+      <div class="flex-2 flex flex-col gap-2 m-6 min-w-0">
+        <h2 class="font-inter font-extrabold text-2xl text-primary-light mb-4">
+        Screenshots
+        </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Imagen principal -->
+        <div class="md:col-span-2">
+          <img
+            src={screenshots[0]?.image}
+            alt="Screenshot"
+            class="w-full h-62.5 md:h-full object-cover rounded-2xl"
+          />
+        </div>
+
+        <!-- Imágenes laterales -->
+        <div class="flex flex-col gap-4">
+          {
+            screenshots.slice(1, 3).map((shot) => (
+              <img
+                src={shot.image}
+                alt="Screenshot"
+                class="w-full h-30 md:flex-1 object-cover rounded-2xl"
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+      <div class="flex-1 flex flex-col gap-4 p-6 min-w-0 border h-auto border-white/20 bg-neutral-light rounded-2xl">
+        <h2 class="font-jetbrains-mono text-primary-light text-sm font-bold">GENRES & TAGS</h2>
+        <hr class="px-3 text-white/20">
+        <div class="flex flex-col gap-6 justify-between h-full">
+          <div class="flex flex-col gap-1">
+            <div class="flex gap-1 flex-wrap">{gameData.genres.map( g => (
+              <button class="font-inter text-sm text-gray-400 bg-neutral-light/60 border border-white/20 rounded-lg px-2 py-1">{g.name}</button>
+            ))}</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="flex gap-1 flex-wrap">{gameData.tags.map( t => (
+              <button class="font-inter text-[10px] text-gray-400 bg-neutral-light/60 border border-white/20 rounded-lg px-1 py-0.5">{t.name}</button>
+            ))}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</MainLayout>

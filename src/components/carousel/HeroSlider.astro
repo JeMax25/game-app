@@ -1,0 +1,106 @@
+---
+import { Icon } from 'astro-icon/components';
+import type { Result } from '../../interfaces/gameData';
+import { platformIcons } from "../../constants/plataformIcons";
+
+
+interface Props {
+    trendingGames: Result[];
+}
+
+const { trendingGames } = Astro.props as Props; 
+
+---
+
+
+<div class="flex flex-1 flex-col min-w-0">
+    <swiper-container class="swiper" 
+                    effect="coverflow" centered-slides="true" slides-per-view="1" speed="500" loop="true" autoplay-delay="10000" 
+                    pagination="true" navigation="false" allow-touch-move="true" simulate-touch="true" grab-cursor="true">
+
+                    {
+                        trendingGames.map(games => (
+                            <swiper-slide>
+                                <div class="relative h-full w-full">
+                                    <img
+                                        class="absolute inset-0 h-full w-full object-cover rounded-2xl"
+                                        src={games.background_image}
+                                        alt=""
+                                    />
+
+                                    <div class="absolute inset-0 bg-black/40 rounded-2xl"></div>
+
+                                    <div class="absolute bottom-8 left-6 z-10 w-[90%] md:w-[60%]">
+                                        <div class="flex flex-col gap-1 md:gap-5">
+                                            <a href={`/games/${games.slug}`} class="text-4xl font-extrabold font-inter text-shadow-black">
+                                            {games.name}
+                                            </a>
+                                        <div class="flex flex-col md:flex-row gap-2 md:gap-6 w-full">
+                                            <h2 class="w-full md:w-42 h-auto rounded-xl py-6 px-3 bg-primary-light text-primary-dark text-xl text-center font-semibold">Play Trailer</h2>
+                                            <h2 class="w-full md:w-42 h-auto rounded-xl py-6 px-3 bg-gray-700/80 text-white text-center text-xl font-semibold
+                                                       border border-white/20 ">Learn More</h2>
+                                        </div>
+                                        <div class="flex gap-2 pt-2">
+                                            {
+                                                games.parent_platforms.map(({ platform }) => (
+                                                <Icon
+                                                    name={platformIcons[platform.slug]}
+                                                    size="20"
+                                                />
+                                                ))
+                                            }
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </swiper-slide>
+                        ))
+                    }
+    </swiper-container>
+</div>
+
+<style>
+  .swiper {
+    width: 100%;
+    max-width: 100%;
+    height: 60vh;
+    overflow: hidden;
+    border-radius: 1rem;
+  }
+
+  swiper-container {
+    --swiper-navigation-color: var(--color-primary);
+    --swiper-pagination-color: var(--color-primary);
+
+    --swiper-navigation-sides-offset: 25px;
+}
+
+   swiper-slide {
+    border-radius: 1rem;
+   }
+
+   img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+   }
+
+</style>
+
+<script>
+    // import function to register Swiper custom elements
+    import Swiper from 'swiper';
+    import { register } from 'swiper/element/bundle';
+    // register Swiper custom elements
+    register();
+
+   
+</script>
+
+
+
+
+
+
+
+

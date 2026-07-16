@@ -1,0 +1,19 @@
+---
+import type { Result } from "../interfaces/gameData";
+import CardGame from "./MiniComponents/CardGame.astro";
+
+interface Props {
+    games: Result[];
+}
+
+const { games } = Astro.props;
+
+---
+
+<div class="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(178px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(286px,1fr))] justify-items-center">
+    {
+        games.map( (g) => {
+           return <CardGame game={g} />
+        })
+    }
+</div>

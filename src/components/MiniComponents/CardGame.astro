@@ -1,0 +1,151 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Result } from "../../interfaces/gameData";
+import { platformIcons } from "../../constants/plataformIcons";
+import notImage from "../../assets/images/notImage.png"
+
+interface Props {
+    game: Result;
+}
+
+const {game} = Astro.props;
+
+const genres = game.genres
+  .slice(0, 2)
+  .map((genre) => genre.name);
+
+---
+
+
+<!-- desktop -->
+<div
+  class="hidden md:block w-72 overflow-hidden rounded-3xl border border-white/10 bg-neutral-light/80"
+  transition:name={game.id.toString()}
+>
+  <div class="relative h-48">
+    <img
+      src={game.background_image || notImage.src}
+      alt={game.name}
+      class="h-full w-full object-cover"
+    />
+
+    <div
+      class="absolute top-3 right-3 flex items-center"
+    >
+      <Icon name="heart" size="24" />
+    </div>
+  </div>
+
+  <div class="p-4">
+    <div class="flex items-start justify-between">
+      <div>
+        <a href={`/games/${game.slug}`}>
+          <h2 class="font-inter text-lg font-semibold">
+          {game.name}
+        </h2>
+        </a>
+
+        <div class="flex flex-col items-baseline gap-2">
+          
+          <div class="flex gap-1">
+            {
+            genres.map( g => <p class="text-sm text-slate-400 font-jetbrains-mono">{g}</p>)
+            }
+          </div>
+
+          <div class="flex gap-1">
+             {
+
+            game.parent_platforms && game.parent_platforms.length > 0 ? (
+              game.parent_platforms.map(({ platform }) => {
+                // 1. Buscamos si existe el icono en tu mapeo de constantes
+                const iconName = platformIcons[platform.slug];
+                // 2. Si no existe (es undefined o ""), retornamos null para que no dibuje nada
+                if (!iconName) return null;
+                // 3. Si existe, devolvemos el Icon de forma segura
+                return (
+                  <Icon
+                    name={iconName}
+                    size="20"
+                  />
+                );
+              })
+            ) : (
+              <p></p>
+            )
+        }
+          </div>   
+        </div>
+      </div>
+
+      <button class="flex bg-black/60 px-2 py-1 gap-1 rounded-full">
+        <p class="text-sm font-semibold">{game.rating}</p>
+        <Icon name="star-full" size="20" />  
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Movil -->
+
+<div class="w-full max-w-45 md:hidden " 
+  transition:name={game.id.toString()}>
+    <!-- Tarjeta -->
+    <div class="overflow-hidden rounded-3xl border border-white/10 bg-neutral-light relative">
+        <img
+            src={game.background_image}
+            alt={game.name}
+            class="aspect-3/4 w-full object-cover"
+        />
+       <div class="absolute top-3 right-3 flex items-center">
+            <Icon name="heart" size="24" />
+       </div>
+    </div>
+
+    <!-- Información -->
+    <div class="mt-3 px-2 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <a href={`/games/${game.slug}`}>
+            <h2 class="font-inter font-semibold text-sm line-clamp-1">
+            {game.name}
+            </h2>
+          </a>
+            
+            <div class="flex items-center gap-1 bg-black/60 px-2 py-1 rounded-full">
+                <p class="text-sm font-semibold">{game.rating}</p>
+                <Icon name="star-full" size="16" />          
+            </div>
+        </div>
+
+        <div class="w-full flex items-center justify-items-end-safe gap-2 pb-2">
+             {
+              genres.map( g => <p class="text-xs text-slate-500 line-clamp-1 font-jetbrains-mono">{g}</p>)
+              }
+        </div>
+        <div>
+          <button class="flex gap-2 max-w-full">
+                {
+
+            game.parent_platforms && game.parent_platforms.length > 0 ? (
+              game.parent_platforms.map(({ platform }) => {
+                // 1. Buscamos si existe el icono en tu mapeo de constantes
+                const iconName = platformIcons[platform.slug];
+                // 2. Si no existe (es undefined o ""), retornamos null para que no dibuje nada
+                if (!iconName) return null;
+                // 3. Si existe, devolvemos el Icon de forma segura
+                return (
+                  <Icon
+                    name={iconName}
+                    size="20"
+                  />
+                );
+              })
+            ) : (
+              <p></p>
+            )
+        }
+            </button>
+        </div>
+        
+    </div>
+</div>

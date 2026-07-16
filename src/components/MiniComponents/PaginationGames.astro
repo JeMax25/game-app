@@ -1,0 +1,30 @@
+---
+
+const url = Astro.url;
+const pageParam = Number( url.searchParams.get('page') ?? 1);
+
+const path = url.pathname;
+
+const currentPage = pageParam;
+
+// 1. Clonamos los parámetros de búsqueda actuales de la URL para la página anterior
+const prevParams = new URLSearchParams(url.searchParams);
+prevParams.set('page', String(Math.max(currentPage - 1, 1)));
+
+// 2. Clonamos los parámetros actuales de la URL para la página siguiente
+const nextParams = new URLSearchParams(url.searchParams);
+nextParams.set('page', String(Math.min(currentPage + 1, 20)));
+
+---
+
+<div class="flex justify-center items-end gap-6 pt-5 pb-5 md:pb-0">
+    <a href={`${path}?${prevParams.toString()}`} data-astro-prefetch 
+    class="font-jetbrains-mono text-white text-[14px] px-5 pt-3 pb-0.5 rounded-t-xl border border-primary-light/20 bg-neutral-light/80">
+     {`< Back`}
+    </a>
+
+    <span class="font-inter text-white text-2xl px-5 pt-4  rounded-t-xl border border-primary-light/50 bg-neutral-light/80 shadow-[0_0_10px_color-mix(in_srgb,var(--color-primary-light)_30%,transparent)] ">Page {currentPage}</span>
+    
+    <a href={`${path}?${nextParams.toString()}`} data-astro-prefetch 
+    class="font-jetbrains-mono text-white text-[14px]  px-5 pt-3 pb-0.5 rounded-t-xl border border-primary-light/20 bg-neutral-light/80">{`next >`}</a>
+</div>

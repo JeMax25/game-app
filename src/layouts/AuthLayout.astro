@@ -1,0 +1,51 @@
+---
+import { ClientRouter } from "astro:transitions";
+import '../styles/global.css'
+import space from "../assets/images/space.jpg"
+
+const {title, message} = Astro.props;
+
+---
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<ClientRouter/>
+		<title>{title}</title>
+	</head>
+    <body class="min-h-screen overflow-x-hidden text-slate-100 bg-neutral-light">
+
+		<div class="relative min-h-screen">
+
+			<!-- Fondo -->
+			<img
+			src={space.src}
+			alt=""
+			class="absolute inset-0 w-full h-full object-cover"
+			/>
+
+			<div class="absolute inset-0 bg-black/40"></div>
+
+			<!-- Login -->
+			<section class="relative z-10 min-h-screen w-full flex items-center justify-center px-6">
+				<div class="w-full max-w-md border border-white/10 bg-neutral-light/30 backdrop-blur-lg rounded-3xl p-8">
+					<div class="mb-8 text-center">
+						<h1 class="text-3xl font-inter font-extrabold">
+							{message}
+						</h1>
+
+						<p class="text-sm text-gray-400 mt-2">
+							Enter your credentials to access the console
+						</p>
+					</div>
+					<slot />
+				</div>
+			</section>
+		</div>
+	</body>
+</html>

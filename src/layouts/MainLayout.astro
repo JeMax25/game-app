@@ -1,0 +1,83 @@
+---
+ import { ClientRouter } from 'astro:transitions';
+import SearchBar from '../components/MiniComponents/SearchBar.astro';
+import NavBar from '../components/NavBar.astro'
+import SideBar from '../components/SideBar.astro'
+import '../styles/global.css'
+
+const {title} = Astro.props
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<ClientRouter/>
+		<title>{title}</title>
+	</head>
+	<body class="min-h-screen w-full overflow-x-hidden text-slate-100">
+		<div class="flex min-h-screen max-w-full bg-neutral">
+			<div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs hidden md:hidden"></div>
+			<SideBar/>
+			<div class="flex flex-1 flex-col min-w-0 mx-0">
+				<NavBar/>
+					<div class="md:hidden h-16 flex items-center my-5 p-5 mx-2 border rounded-xl border-white/10 bg-neutral-light">
+            			<SearchBar type="desktop"/>
+        			</div>
+				<main class="flex-1 min-w-0 overflow-auto px-0 md:p-0">
+					<slot/>
+				</main>
+			</div>
+			
+		</div>
+	</body>
+
+	<script>
+
+		document.addEventListener('astro:page-load', () => {
+			const sidebar = document.getElementById('sidebar');
+			const openBtn = document.getElementById('mobile-menu-toggle');
+			const closeBtn = document.getElementById('close-sidebar');
+			const backdrop = document.getElementById('sidebar-backdrop');
+			// Función para abrir el menú
+			openBtn?.addEventListener('click', () => {
+				sidebar?.classList.remove('-translate-x-full');
+				backdrop?.classList.remove('hidden');
+			});
+			// Función para cerrar el menú
+			const closeMenu = () => {
+				sidebar?.classList.add('-translate-x-full');
+				backdrop?.classList.add('hidden');
+			};
+			closeBtn?.addEventListener('click', closeMenu);
+			backdrop?.addEventListener('click', closeMenu);
+		});
+
+		document.addEventListener('astro:after-swap', () => {
+			const gamesStartElement = document.getElementById('games-start');
+			const mainContainer = document.querySelector('main');
+			
+			// 1. Obtenemos los parámetros de la URL actual (ej. ?page=2)
+			const urlParams = new URLSearchParams(window.location.search);
+			const isPagination = urlParams.has('page'); // Devuelve true si la URL tiene "?page="
+			if (isPagination && gamesStartElement) {
+				// Si es paginación, hacemos scroll hasta donde empiezan los juegos
+				gamesStartElement.scrollIntoView({ 
+				behavior: 'smooth', 
+				block: 'start' 
+				});
+			} else {
+				// Si no es paginación (ej. volvimos a la Home limpia), subimos el scroll de <main> al inicio (0, 0)
+				if (mainContainer) {
+				mainContainer.scrollTo({ 
+					top: 0, 
+					behavior: 'smooth' 
+				});
+				}
+			}
+			});
+</script>
+</html>

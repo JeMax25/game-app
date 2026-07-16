@@ -1,0 +1,50 @@
+---
+
+import { Icon } from "astro-icon/components";
+
+---
+
+<aside 
+class=" w-64 shrink-0 bg-neutral-ligth border-r border-slate-800 bg-neutral-light 
+ fixed inset-y-0 left-0 z-50 -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out"
+ id="sidebar">
+    <div class="flex flex-col sticky top-0 h-screen">
+        <div>
+            
+        </div>
+        <div class="p-6 mt-6 md:mt-0 font-inter">
+            <a href="/">
+            <h2 class="logo-title font-bold text-3xl text-primary-light">Game Tracker</h2></a>
+            <p class="text-slate-500 font-jetbrains-mono font-semibold text-xs">Track your favoirte games</p>
+            <button class="absolute top-3 right-3 md:hidden" id="close-sidebar">
+                <Icon name="close" size="35" />
+            </button>
+        </div>
+        <nav class="flex flex-1 flex-col justify-between p-6 font-jetbrains-mono text-xs">
+            <ul class="flex flex-col ">
+                <li class="side-bar-item flex items-center gap-2">
+                    <Icon name="explore" size="25"/>
+                    <a href="">Explore</a>
+                </li>
+                <li class="side-bar-item flex items-center gap-2">
+                    <Icon name="heart" size="25" />
+                    <a href="">Favorites</a>
+                </li>
+                <li class="side-bar-item flex items-center gap-2">
+                    <Icon name="mando" size="25"/>
+                    <a href="">Library</a>
+                </li>
+            </ul>
+            <ul class="flex flex-col gap-2">
+                <li class="side-bar-item flex items-center gap-2">
+                    <Icon name="settings" size="25"/>
+                    <a href="">Settings</a>
+                </li>
+                <li class="side-bar-item flex items-center gap-2">
+                    <Icon name="support" size="25"/>
+                    <a href="">Support</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>

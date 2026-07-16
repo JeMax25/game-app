@@ -1,0 +1,34 @@
+---
+import CardGamesList from "../../components/CardGamesList.astro";
+import PaginationGames from "../../components/MiniComponents/PaginationGames.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { getCategoryGames } from "../../lib/api/rawg";
+import { searchGames } from "../../lib/api/rawg";
+
+const searchParams = Astro.url.searchParams;
+
+const genre = searchParams.get("genres")!;
+const query = searchParams.get("q") ?? "";
+
+
+const currentPage = Number( searchParams.get('page') ?? 1);;
+
+let games;
+
+if (query) {
+  games = await searchGames(query, currentPage);
+} else if (genre) {
+  games = await getCategoryGames(genre);
+} 
+
+if (!games ){
+    return Astro.redirect('/')
+}
+
+---
+
+
+<MainLayout>
+    <CardGamesList games={games.results}/>
+    <PaginationGames />
+</MainLayout>

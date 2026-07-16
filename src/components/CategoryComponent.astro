@@ -1,0 +1,39 @@
+---
+import type { ResultCategory } from "../interfaces/categoryData";
+import { getCategories } from "../lib/api/rawg";
+
+const apiKey = import.meta.env.RAWG_API_KEY
+
+const categories  = await getCategories();
+
+---
+
+
+<div class="flex flex-1 flex-col min-w-0">
+    
+    <swiper-container slides-per-view="auto" speed="500" loop="false"  mousewheel="true" scrollbar="true" space-between="10" 
+                      class="categories-swiper mt-3 pb-6">
+        {
+        categories.map((cat) => (
+            <swiper-slide class="w-auto! pb-2.5 md:pb-5">
+                    <a href={`/games?q=${cat.name}`} class="block border border-white/10 px-5.5 py-3.5 rounded-xl cursor-pointer font-extralight font-jetbrains-mono hover:bg-primary transition-colors text-white text-center">{cat.name}</a>
+            </swiper-slide>
+        ))
+    }   
+    </swiper-container>
+</div>
+
+<style>
+  .categories-swiper {
+  --swiper-scrollbar-bg-color: rgba(255, 255, 255, 0.1);
+  --swiper-scrollbar-drag-bg-color: var(--color-primary);
+}
+</style>
+
+<script>
+// import function to register Swiper custom elements
+import { register } from 'swiper/element/bundle';
+register();
+
+
+</script>

@@ -1,0 +1,45 @@
+---
+import AuthLayout from "../layouts/AuthLayout.astro";
+
+
+---
+
+<AuthLayout title="login" message="Welcome Back">
+    <form action="" class="flex flex-col gap-4 items-center">
+        <div class="flex flex-col gap-2 w-full">
+            <label class="text-xs text-white/50 font-jetbrains-mono
+            ">EMAIL OR USERNAME</label>
+            <input type="text" placeholder="Je_monda_xter22@gmail.com" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10 
+          ">
+        </div>
+        <div class="flex flex-col gap-2 w-full">
+            <label class="text-xs text-white/50 font-jetbrains-mono
+            ">PASSWORD</label>
+            <input type="text" placeholder="password..." class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+        </div>
+        <button type="submit" class="text-xl font-inter font-bold w-full bg-primary/90 text-neutral rounded-2xl py-3.5
+        transition-all duration-300 ease-out
+        hover:-translate-y-1
+      hover:bg-primary
+        hover:shadow-[0_0_10px_color-mix(in_srgb,var(--color-primary-light)_50%,transparent)]
+        active:translate-y-0
+        cursor-pointer
+        ">
+            Sig In
+        </button>
+        <p class="text-xs font-inter">New to Aetheric? <span class="text-primary-light cursor-pointer"><a href="/register">Create an account</a></span></p>
+    </form>
+</AuthLayout>
+
+<style>
+
+    input{
+    transition: all 300ms;
+    }
+
+    input:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 8px var(--color-secondary);
+    }
+    </style>
