@@ -9,13 +9,13 @@ import AuthLayout from "../layouts/AuthLayout.astro";
         <div class="flex flex-col gap-2 w-full">
             <label class="text-xs text-white/50 font-jetbrains-mono
             ">EMAIL OR USERNAME</label>
-            <input type="text" placeholder="Je_monda_xter22@gmail.com" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10 
+            <input type="text" name="email-user" placeholder="Je_monda_xter22@gmail.com" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10 
           ">
         </div>
         <div class="flex flex-col gap-2 w-full">
             <label class="text-xs text-white/50 font-jetbrains-mono
             ">PASSWORD</label>
-            <input type="text" placeholder="password..." class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+            <input type="text" name="password" placeholder="password..." class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
         </div>
         <button type="submit" class="text-xl font-inter font-bold w-full bg-primary/90 text-neutral rounded-2xl py-3.5
         transition-all duration-300 ease-out
@@ -42,4 +42,19 @@ import AuthLayout from "../layouts/AuthLayout.astro";
     border-color: var(--color-secondary);
     box-shadow: 0 0 8px var(--color-secondary);
     }
-    </style>
+</style>
+
+<script>
+
+    const form = document.querySelector('form') as HTMLFormElement;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault
+
+        const formData = new FormData(form);
+
+          console.log('Email:', formData.get('email-user'));
+    console.log('Password:', formData.get('password'));
+    })
+
+</script>
