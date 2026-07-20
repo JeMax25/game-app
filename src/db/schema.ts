@@ -11,11 +11,3 @@ export const gamesTable = sqliteTable("games_table", {
   personalRating: int(),
   createdAt: int({ mode: "timestamp" }).notNull(),
 });
-
-export const userTable = sqliteTable("user_table", {
-  id: int().primaryKey({ autoIncrement: true }),
-  username: text().notNull().unique(),
-  email: text().notNull().unique(),
-  password: text().notNull(),
-  createdAt: text().default(sql`CURRENT_TIMESTAMP`)
-})
