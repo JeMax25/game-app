@@ -1,0 +1,58 @@
+---
+import { Icon } from "astro-icon/components";
+import MainLayout from "../../layouts/MainLayout.astro";
+
+const user = Astro.locals.user;
+
+console.log(user)
+
+---
+
+<MainLayout>
+
+    <section class="flex flex-col gap-8 md:gap-12 items-start lg:flex-row mt-12 mx-8 md:mx-12 lg:mx-16 ">
+        <div class="flex-2 gap-2 p-6 min-w-0">
+            <div class="p-6 border min-w-0 border-white/20 bg-neutral-light rounded-2xl">
+                <div class="rounded-3xl bg-neutral-light">
+                    <div class="flex gap-8">
+                        <div class="flex-1 w-30 h-30 rounded-full border border-white"></div>
+                        <div class="flex flex-2 flex-col gap-2 justify-between">
+                            <h2 class="text-5xl font-inter text-primary-light font-extrabold">{user.name}</h2>
+                            {
+                                user.verified ? (
+                                    <div class="flex w-fit items-center py-1 px-3 rounded-full border border-secondary bg-secondary/30 ">
+                                        <Icon name="star-full"/>
+                                         <p class="font-jetbrains-mono text-[10px] font-semibold text-secondary">VERIFIED</p>
+                                    </div>
+                                ) : (
+                                    <div class="flex w-fit items-center py-1 px-3 rounded-full border border-secondary bg-secondary/30 ">
+                                        <Icon name="star-empty"/>
+                                         <p class="font-jetbrains-mono text-[10px] font-semibold text-gray-500">No Verified</p>
+                                    </div>
+                                )
+                            }
+                            <div class="flex items-center gap-2">
+                                <Icon name="star-empty"/>
+                                <p class="font-inter font-semibold text-[14px] text-gray-500">{user.email}</p>
+                            </div>
+                            <div class="flex gap-2 ">
+                                <div class="border border-gray-500/10 rounded-2xl p-4 bg-neutral">
+                                    <h3 class="font-jetbrains-mono text-[10px] text-gray-500">USER ID</h3>
+                                    <p class="font-inter text-sm text-secondary">{user.id}</p>
+                                </div>
+                                <div class=" border border-gray-500/10 rounded-2xl p-4 bg-neutral">
+                                    <h3 class="font-jetbrains-mono text-[10px] text-gray-500">MEMBER SINCE</h3>
+                                    <p class="font-inter text-sm text-secondary">{user.createdAt}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <div class="flex-1">
+
+        </div>
+    </section>
+
+</MainLayout>

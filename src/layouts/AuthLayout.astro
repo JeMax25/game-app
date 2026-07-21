@@ -2,9 +2,11 @@
 import { ClientRouter } from "astro:transitions";
 import '../styles/global.css'
 import space from "../assets/images/space.jpg"
+import Toast from "../components/MiniComponents/Toast.astro";
 
 const {title, message} = Astro.props;
 
+const showSuccesToast = Astro.url.searchParams.get('registered') === 'success';
 ---
 
 
@@ -19,6 +21,12 @@ const {title, message} = Astro.props;
 		<title>{title}</title>
 	</head>
     <body class="min-h-screen overflow-x-hidden text-slate-100 bg-neutral-light">
+
+		  {
+        showSuccesToast && (
+            <Toast title="Account Created" message="The account has been successfully registered."/>
+        )
+   		 }
 
 		<div class="relative min-h-screen">
 

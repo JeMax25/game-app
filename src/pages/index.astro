@@ -5,6 +5,7 @@ import CategoryComponent from "../components/CategoryComponent.astro";
 import CardGamesList from "../components/CardGamesList.astro";
 import { getAllGames, getTrendingGames  } from "../lib/api/rawg";
 import PaginationGames from "../components/MiniComponents/PaginationGames.astro"
+import { authClient } from "../lib/auth-client";
 
 export const prerender = false;
 
@@ -16,6 +17,9 @@ const [trending, latest] = await Promise.all([
   getTrendingGames(),
   getAllGames(currentPage),
 ]);
+
+console.log('User:',Astro.locals.user);
+console.log('Session:',Astro.locals.session);
 
 ---
 
@@ -32,6 +36,3 @@ const [trending, latest] = await Promise.all([
 	</div>
 	<PaginationGames/>
 </MainLayout> 
-
-
-

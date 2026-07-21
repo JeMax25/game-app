@@ -1,11 +1,12 @@
 ---
+import Toast from "../components/MiniComponents/Toast.astro";
 import AuthLayout from "../layouts/AuthLayout.astro";
 
 
 ---
 
 <AuthLayout title="login" message="Welcome Back">
-    <form action="" class="flex flex-col gap-4 items-center">
+    <form method="post" class="flex flex-col gap-4 items-center">
         <div class="flex flex-col gap-2 w-full">
             <label class="text-xs text-white/50 font-jetbrains-mono
             ">EMAIL OR USERNAME</label>
@@ -15,7 +16,7 @@ import AuthLayout from "../layouts/AuthLayout.astro";
         <div class="flex flex-col gap-2 w-full">
             <label class="text-xs text-white/50 font-jetbrains-mono
             ">PASSWORD</label>
-            <input type="text" name="password" placeholder="password..." class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+            <input type="password" name="password" placeholder="password..." class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
         </div>
         <button type="submit" class="text-xl font-inter font-bold w-full bg-primary/90 text-neutral rounded-2xl py-3.5
         transition-all duration-300 ease-out
@@ -45,16 +46,51 @@ import AuthLayout from "../layouts/AuthLayout.astro";
 </style>
 
 <script>
+    import { navigate } from "astro:transitions/client";
+    import { authClient } from "../lib/auth-client";
 
+    document.addEventListener("astro:page-load", () => {
+    
     const form = document.querySelector('form') as HTMLFormElement;
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault
+    form.addEventListener('submit', async(e) => {
+        e.preventDefault()
 
         const formData = new FormData(form);
 
-          console.log('Email:', formData.get('email-user'));
-    console.log('Password:', formData.get('password'));
+        const email = formData.get("email-user");
+        const password = formData.get("password");
+
+    if (
+        typeof email !== "string" ||
+        typeof password !== "string"
+    ) {
+        return;
+    }
+
+    try {
+        
+        const result = await authClient.signIn.email({
+            email,
+            password,
+        });
+
+        if (result.error) {
+            alert(result.error.message);
+        return;
+
+        
+    }
+        await navigate('/');
+
+    } catch (error) {
+        console.error(error);
+    }
+
     })
+
+});
+
+    
 
 </script>

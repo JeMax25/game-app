@@ -1,32 +1,42 @@
 ---
+import Toast from "../components/MiniComponents/Toast.astro";
 import AuthLayout from "../layouts/AuthLayout.astro";
 
 
 ---
 
 <AuthLayout title="login" message="Register Now">
-    <form action="" class="flex flex-col gap-4 items-center">
+
+    <template id="toast-error-template">
+        <Toast 
+        title="Error de Registro" 
+        message="__MENSAJE__"  
+        type="error"
+        />
+    </template>
+
+    <form method="post" class="flex flex-col gap-4 items-center">
         <div class="flex gap-2 w-full">
             <div class="flex flex-col flex-1 min-w-0">
                 <label class="text-xs text-white/50 font-jetbrains-mono
             ">USERNAME</label>
-            <input type="text" placeholder="" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+            <input type="text" placeholder="" name="name" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
             </div>
              <div class="flex flex-col flex-1 min-w-0">
                 <label class="text-xs text-white/50 font-jetbrains-mono
             ">EMAIL</label>
-            <input type="text" placeholder="" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+            <input type="text" placeholder="" name="email" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
             </div>
         </div>
         <div class="flex flex-col gap-2 w-full">
             <label class="text-xs text-white/50 font-jetbrains-mono
             ">PASSWORD</label>
-            <input type="text" placeholder="" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+            <input type="password" placeholder="" name="password" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
         </div>
         <div class="flex flex-col gap-2 w-full">
             <label class="text-xs text-white/50 font-jetbrains-mono
             ">CONFIRM PASSWORD</label>
-            <input type="text" placeholder="" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
+            <input type="password" placeholder="" name="confirm-password" class="px-4 py-3 rounded-xl bg-neutral-light/50 border border-white/10">
         </div>
         <button type="submit" class="text-xl font-inter font-bold w-full bg-primary/90 text-neutral rounded-2xl py-3.5
         transition-all duration-300 ease-out
@@ -54,3 +64,105 @@ import AuthLayout from "../layouts/AuthLayout.astro";
     box-shadow: 0 0 8px var(--color-secondary);
     }
     </style>
+
+<script>
+
+    import { navigate } from 'astro:transitions/client';
+    import { authClient } from '../lib/auth-client'
+
+    const form = document.querySelector('form') as HTMLFormElement;
+
+    const showErrorToast = (message: string) =>  {
+    // 1. Obtenemos el template
+    const template = document.getElementById('toast-error-template') as HTMLTemplateElement;
+    if (!template) return;
+    // 2. Si ya hay una alerta en pantalla, la eliminamos para evitar duplicados
+    const existingToast = document.getElementById('toast-alert');
+    if (existingToast) existingToast.remove();
+    // 3. Clonamos el contenido del template
+    const clone = template.content.cloneNode(true) as DocumentFragment;
+    // 4. ELIMINAMOS la etiqueta <script> del clon para que no interfiera
+    clone.querySelector('script')?.remove();
+    // 5. Personalizamos el mensaje y el título
+    const messageSpan = clone.querySelector('p');
+    if (messageSpan) messageSpan.textContent = message;
+    const titleHeader = clone.querySelector('h3');
+    if (titleHeader) titleHeader.textContent = "Error al registrarse";
+    // 6. Obtenemos las referencias al div y al botón de cerrar ANTES de inyectarlo
+    const toast = clone.querySelector('#toast-alert') as HTMLDivElement;
+    const closeBtn = clone.querySelector('#close-toast-btn');
+    // 7. Inyectamos el clon en la página
+    document.body.appendChild(clone);
+    // 8. Controlamos la animación de entrada en JS (funciona siempre)
+    setTimeout(() => {
+        toast.classList.remove('-translate-y-40', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+    }, 50);
+    // 9. Controlamos el temporizador de auto-cierre (5 segundos)
+    const autoCloseTimer = setTimeout(() => {
+        closeToast();
+    }, 5000);
+    // 10. Controlamos el botón de cerrar (X)
+    closeBtn?.addEventListener('click', () => {
+        clearTimeout(autoCloseTimer); // Cancelamos el cierre automático
+        closeToast();
+    });
+    // Función interna para cerrar con animación de salida
+    function closeToast() {
+        if (toast) {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('-translate-y-40', 'opacity-0');
+            // Removemos del DOM al terminar la animación
+            setTimeout(() => toast.remove(), 500);
+        }
+    }
+}
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData(form);
+
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const password = formData.get('password');
+        const confirmPassword = formData.get('confirm-password');
+
+        if (
+            typeof name !== "string" ||
+            typeof email !== "string" ||
+            typeof password !== "string" ||
+            typeof confirmPassword !== "string"
+            
+            ) {
+                console.error("Datos inválidos");
+            return;
+            }
+
+        if (password !== confirmPassword) {
+        showErrorToast('The passwords do not match')
+        return;
+    }
+
+    try {
+        const result = await authClient.signUp.email({
+            name,
+            email,
+            password,
+        });
+
+        if ( result.error ){
+            showErrorToast(result.error.message!);
+            return
+        }
+
+    } catch (error) {
+        console.error(error);
+        return
+    }
+          
+    await navigate('/login?registered=success')
+
+    })
+
+</script>
